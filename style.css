@@ -1,0 +1,33 @@
+body{
+    margin:0;
+    padding: 2rem;
+    font-size: large;
+}
+
+.cf_monitor{
+    display:none;
+}
+
+img{
+    margin-left: 5rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+p,li{
+    margin-right: 5rem;
+}
+
+code{
+    color:blue;
+    background-color: gainsboro;
+    font-weight: bold;
+    font-size: larger;
+    padding:2px;
+}
+
+pre{
+    margin-left: 1rem;
+    background-color: gainsboro;
+    padding: 2px;
+}
