@@ -2,6 +2,7 @@ body{
     margin:0;
     padding: 2rem;
     font-size: large;
+    font-family:sans-serif;
 }
 
 .cf_monitor{
@@ -26,8 +27,26 @@ code{
     padding:2px;
 }
 
-pre{
+pre,blockquote{
     margin-left: 1rem;
     background-color: gainsboro;
     padding: 2px;
+}
+
+.sect{
+    margin-top: 5rem;
+    font-size:x-large;
+    font-weight: bold;
+}
+
+.sect:visited{
+    color:darkmagenta;
+}
+
+hr{
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    margin-left:0;
+    margin-right:0;
+    padding:0;
 }
