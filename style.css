@@ -50,3 +50,9 @@ hr{
     margin-right:0;
     padding:0;
 }
+
+.cpp-section{
+    font-weight: bold;
+    margin-top: 2rem;
+    font-size:x-large;
+}
