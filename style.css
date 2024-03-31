@@ -56,3 +56,20 @@ hr{
     margin-top: 2rem;
     font-size:x-large;
 }
+
+.cpp-note{
+    border: 1px solid black;
+    border-radius: 1.5rem;
+    padding:5px;
+    margin-top: 1.5rem;
+}
+
+.cpp-note.cpp-lightgreenbackground{
+    background-color: lightgreen;
+}
+
+.cpp-note.cpp-lightbluebackground{
+    background-color: #dfe7ff;
+    border-color: #9caad4;
+    box-shadow: 0 2px #9caad4;
+}
