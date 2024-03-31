@@ -9,7 +9,7 @@ def write_head_tag(file):
             <link rel="stylesheet" href="style.css">
         </head>
         <body>
-                   """)
+        """)
             
 def write_header(file,page):
         file.write(f"""
@@ -23,6 +23,7 @@ def write_header(file,page):
 
 def write_closing_tags(file):
      file.write("</main></body>")
+     file.close()
 
 
 def check_fix_and_write_lines(article,file):
@@ -56,7 +57,7 @@ def main():
                 file.write(f"<li><a href={link}><big>{item_text}</big></li><br>\n")
         file.write("</ul></a></body>")
 
-    with open(current_link,"a",encoding="utf-8") as file:
+        file = open(current_link,"a",encoding="utf-8")
 
         i = 1
         for link in links:
@@ -69,8 +70,45 @@ def main():
             i+=1
             
             check_fix_and_write_lines(article,file)
-                
+
+            if i % 100 == 0:
+                 if page_num == 1:
+                    page_num+=1
+                    current_link= f"cppbook-pg{page_num}.html"
+                    prev_link = f"cppbook-pg{page_num - 1}.html"
+
+                    file.write(f"""
+                        <hr>
+                        <div class=footer>
+                            <a href={current_link}> <h2>Next Page</h2> </a>
+                        </div>
+                        """)
+                 else:
+                      page_num+=1
+                      current_link = f"cppbook-pg{page_num}.html"
+                      prev_link = f"cppbook-pg{page_num - 1}.html"
+                      file.write(f"""
+                        <hr>
+                        <div class=footer>
+                            <a href={prev_link}><h2>Previous Page</h2></a>
+                            <a href={current_link}><h2>Next Page</h2></a>
+                        </div>
+                        """)
+                      
+                 write_closing_tags(file)
+                 file = open(current_link,"w",encoding="utf-8")
+                 write_head_tag(file)
+                 write_header(file,page_num)
+                 file.write(f"""
+                <div class=nav>
+                    <a href={prev_link}><h2>Previous Page</h2></a>
+                    <a href=cppbook-pg{page_num + 1}.html><h2>Next Page</h2></a>
+                </div>
+                """)
+
         write_closing_tags(file)
+                
+        
                 
 
 
