@@ -42,7 +42,8 @@ def main():
                     if line.startswith("<div class=\"prevnext"):
                         break
                     line = line.strip()
-                    line = re.sub("</?a.+>","",line)
+                    if line.startswith("<a"):
+                        line = re.sub("</?a.+>","",line)
                     if len(line) > 1:
                         file.write(f"{line}\n")
                     
