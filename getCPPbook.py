@@ -99,12 +99,7 @@ def main():
                  file = open(current_link,"w",encoding="utf-8")
                  write_head_tag(file)
                  write_header(file,page_num)
-                 file.write(f"""
-                <div class=nav>
-                    <a href={prev_link}><h2>Previous Page</h2></a>
-                    <a href=cppbook-pg{page_num + 1}.html><h2>Next Page</h2></a>
-                </div>
-                """)
+
 
         write_closing_tags(file)
                 
