@@ -1,9 +1,25 @@
 body{
     margin:0;
-    padding: 2rem;
+    padding: 0;
     font-size: large;
     font-family:sans-serif;
 }
+
+main{
+    padding:2rem;
+}
+
+.headerbar{
+    background-color:blue;
+    display: flex;
+    position:static;
+    left:0px;
+    right: 0px;
+    top:0px;
+    height:4rem;
+    justify-content: center;
+}
+
 
 .cf_monitor{
     display:none;
