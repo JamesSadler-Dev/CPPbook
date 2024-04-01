@@ -14,7 +14,8 @@ def write_head_tag(file):
 def write_header(file,page):
         file.write(f"""
             <div class=headerbar>
-                <h1>LearnCPP.com to Book conversion page {page}</h1>
+                <h1>LearnCPP.com to Book Conversion</h1>
+                <span> Page {page} </span>
             </div>
             <main>
                 <a href=tableofcontents.html target=_blank class=tableofcontents>

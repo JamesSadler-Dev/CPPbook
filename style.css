@@ -10,17 +10,28 @@ main{
 }
 
 .headerbar{
-    background-color:blue;
+    background-color:#9caad4;
     display: flex;
-    position:static;
+    position:sticky;
     left:0px;
     right: 0px;
     top:0px;
     height:4rem;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-shadow: 0 5px black;
 }
 
+.headerbar *{
+    vertical-align: middle;
+}
 
+.headerbar span{
+    font-weight: bold;
+    font-size:x-large;
+}
 .cf_monitor{
     display:none;
 }
