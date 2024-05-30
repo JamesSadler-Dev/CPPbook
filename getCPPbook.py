@@ -48,7 +48,7 @@ def main():
     
     with open("tableofcontents.html","w",encoding="utf-8") as file:
         write_head_tag(file)
-        file.write("<h1>CPP Book Table of contents </h1><hr><ul>")
+        file.write("<h1>CPP Book Table of contents </h1><a href=\"./cppbook-pg1.html\">To Book</a><hr><ul>")
         for item in text:
             item_text = item.get_text()
             link = item.attrs.get("href","na")
@@ -73,20 +73,16 @@ def main():
             check_fix_and_write_lines(article,file)
 
             if i % 100 == 0:
-                 if page_num == 1:
-                    page_num+=1
-                    current_link= f"cppbook-pg{page_num}.html"
-                    prev_link = f"cppbook-pg{page_num - 1}.html"
-
+                page_num+=1
+                current_link= f"cppbook-pg{page_num}.html"
+                if page_num == 2:
                     file.write(f"""
                         <hr>
                         <div class=footer>
                             <a href={current_link}> <h2>Next Page</h2> </a>
                         </div>
                         """)
-                 else:
-                      page_num+=1
-                      current_link = f"cppbook-pg{page_num}.html"
+                else:
                       prev_link = f"cppbook-pg{page_num - 1}.html"
                       file.write(f"""
                         <hr>
@@ -96,10 +92,10 @@ def main():
                         </div>
                         """)
                       
-                 write_closing_tags(file)
-                 file = open(current_link,"w",encoding="utf-8")
-                 write_head_tag(file)
-                 write_header(file,page_num)
+                write_closing_tags(file)
+                file = open(current_link,"w",encoding="utf-8")
+                write_head_tag(file)
+                write_header(file,page_num)
 
 
         write_closing_tags(file)
@@ -107,6 +103,6 @@ def main():
         
                 
 
-
-main()
+if __name__ == "__main__":
+    main()
 
