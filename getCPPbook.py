@@ -2,17 +2,17 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-def write_head_tag(file):
-            file.write("""
+def get_head_tag():
+            return """
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" href="style.css">
         </head>
         <body>
-        """)
+        """
             
-def write_header(file,page):
-        file.write(f"""
+def get_header(page):
+        return f"""
             <div class=headerbar>
                 <h1>LearnCPP.com to Book Conversion</h1>
                 <span> Page {page} </span>
@@ -20,11 +20,11 @@ def write_header(file,page):
             <main>
                 <a href=tableofcontents.html target=_blank class=tableofcontents>
                 <h2>Table of Contents</h2></a><br>
-            """)
+            """
 
-def write_closing_tags(file):
-     file.write("</main></body>")
-     file.close()
+def get_closing_tags():
+     return """</main></body>"""
+
 
 
 def check_fix_and_write_lines(article,file):
@@ -44,8 +44,17 @@ def main():
     links= []
 
     with open("tableofcontents.html","w",encoding="utf-8") as file:
-        write_head_tag(file)
-        file.write("<h1>CPP Book Table of contents </h1><a href=\"./cppbook-pg1.html\">To Book</a><hr><ul>")
+        file.write(get_head_tag())
+        file.write("""
+                   <div class=headerbar>
+                   <h1>CPP Book Table of contents </h1>
+                   </div>
+                   <br>
+                   <a href=\"./cppbook-pg1.html\" style="font-size:larger; font-weight:bold; margin-left:1rem;">To Book</a>
+                   <hr>
+                   <ul>
+                   """)
+        
         for item in text:
             item_text = item.get_text()
             link = item.attrs.get("href","na")
@@ -57,8 +66,8 @@ def main():
 
     current_link = f"cppbook-pg{page_num}.html"
     with open(current_link,"w",encoding="utf-8") as file:
-        write_head_tag(file)
-        write_header(file,page_num)
+        file.write(get_head_tag())
+        file.write(get_header(page_num))
 
     file = open(current_link,"a",encoding="utf-8")
     i = 1
@@ -91,12 +100,14 @@ def main():
                         <a href={current_link}><h2>Next Page</h2></a>
                     </div>
                     """)            
-            write_closing_tags(file)
+            file.write(get_closing_tags())
+            file.close()
             file = open(current_link,"w",encoding="utf-8")
-            write_head_tag(file)
-            write_header(file,page_num)
+            file.write(get_head_tag())
+            file.write(get_header(page_num))
 
-    write_closing_tags(file)
+    file.write(get_closing_tags())
+    file.close()
                 
         
                 
