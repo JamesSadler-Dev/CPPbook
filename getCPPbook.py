@@ -15,7 +15,7 @@ def get_header(page):
         return f"""
             <div class=headerbar>
                 <h1>LearnCPP.com to Book Conversion</h1>
-                <span> Page {page} </span>
+                <span> Section {page} </span>
             </div>
             <main>
                 <a href=tableofcontents.html target=_blank class=tableofcontents>
@@ -37,7 +37,6 @@ def check_fix_and_write_lines(article,file):
         
 
 def main():
-    print("running...")
     index = requests.get("https://www.learncpp.com").text
     text = BeautifulSoup(index,features="html.parser").select(".lessontable-row-title > a")
     page_num = 1
@@ -89,7 +88,7 @@ def main():
         page = requests.get(link).text
         parsed = BeautifulSoup(page,features="html.parser").find("article")
         article = str(parsed).split("\n")
-        section_code= f"<hr><a href={current_link}#sect{i} name=sect{i} class=sect>Section {i}</a>"
+        section_code= f"<hr><a href={current_link}#lesson{i} name=lesson{i} class=sect>Lesson {i}</a>"
         file.write(section_code)
         i+=1
         
