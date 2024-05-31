@@ -52,16 +52,30 @@ def main():
                    <br>
                    <a href=\"./cppbook-pg1.html\" style="font-size:larger; font-weight:bold; margin-left:1rem;">To Book</a>
                    <hr>
-                   <ul>
+                   <ul style="display:flex; flex-direction:column; justify-items:center;">
                    """)
         
-        for item in text:
+        page= 1
+        for num,item in enumerate(text):
             item_text = item.get_text()
             link = item.attrs.get("href","na")
-
             if link != "na":
                 links.append(link)
-                file.write(f"<li><a href={link}><big>{item_text}</big></li><br>\n")
+                if num % 50 == 0:
+                     file.write(f"""
+                                <li>
+                                    <h2><a href="cppbook-pg{page}.html" style="font-weight:bolder; font-size:2rem;">
+                                    Section {page}
+                                    </a></h2>
+                                </li>
+                                """)
+                     page+=1
+
+                file.write(f"""<li>
+                            <span style="font-weight:bold; font-size:larger;">{num+1}. </span>
+                            <big>{item_text}</big>
+                           </li>
+                           <br>\n""")
         file.write("</ul></a></body>")
 
     current_link = f"cppbook-pg{page_num}.html"
