@@ -26,7 +26,6 @@ def get_closing_tags()->str:
      return """</main></body>"""
 
 
-
 def get_fixed_lines(article)->list[str]:
     result = []
     for line in article:    
@@ -36,17 +35,12 @@ def get_fixed_lines(article)->list[str]:
             line = re.sub("</?a.+>","",line)
         result.append(f"{line}\n")
     return result
+
         
-
-def main():
-    index = requests.get("https://www.learncpp.com").text
-    text = BeautifulSoup(index,features="html.parser").select(".lessontable-row-title > a")
-    page_num = 1
-    links= []
-
-    with open("templates/tableofcontents.html","w",encoding="utf-8") as file:
-        file.write(get_head_tag())
-        file.write("""
+def get_table_of_contents_and_links(text):
+    result = {"text":[],"links":[]}
+    result["text"].append(get_head_tag())
+    result["text"].append("""
                    <div class=headerbar>
                    <h1>CPP Book Table of contents </h1>
                    </div>
@@ -55,29 +49,41 @@ def main():
                    <hr>
                    <ul style="display:flex; flex-direction:column; justify-items:center;">
                    """)
-        
-        page= 1
-        for num,item in enumerate(text):
-            item_text = item.get_text()
-            link = item.attrs.get("href","na")
-            if link != "na":
-                links.append(link)
-                if num % 50 == 0:
-                     file.write(f"""
-                                <li>
-                                    <h2><a href="cppbook-pg{page}.html" style="font-weight:bolder; font-size:2rem;">
-                                    Section {page}
-                                    </a></h2>
-                                </li>
-                                """)
-                     page+=1
+    page= 1
+    for num,item in enumerate(text):
+        item_text = item.get_text()
+        link = item.attrs.get("href","na")
+        if link != "na":
+            result["links"].append(link)
+            if num % 50 == 0:
+                    result["text"].append(f"""
+                            <li>
+                                <h2><a href="cppbook-pg{page}.html" style="font-weight:bolder; font-size:2rem;">
+                                Section {page}
+                                </a></h2>
+                            </li>
+                            """)
+                    page+=1
 
-                file.write(f"""<li>
-                            <span style="font-weight:bold; font-size:larger;">{num+1}. </span>
-                            <big>{item_text}</big>
-                           </li>
-                           <br>\n""")
-        file.write("</ul></a></body>")
+            result["text"].append(f"""<li>
+                        <span style="font-weight:bold; font-size:larger;">{num+1}. </span>
+                        <big>{item_text}</big>
+                        </li>
+                        <br>\n""")
+    result["text"].append("</ul></a></body>")
+    return result
+
+
+        
+def main():
+    index = requests.get("https://www.learncpp.com").text
+    text = BeautifulSoup(index,features="html.parser").select(".lessontable-row-title > a")
+    page_num = 1
+    table_contents_and_links = get_table_of_contents_and_links(text)
+    links = table_contents_and_links["links"]
+
+    with open("templates/tableofcontents.html","w",encoding="utf-8") as file:
+        file.writelines(table_contents_and_links["text"])
 
     current_link = f"cppbook-pg{page_num}.html"
     with open(f"templates/{current_link}","w",encoding="utf-8") as file:
