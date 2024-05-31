@@ -2,16 +2,16 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-def get_head_tag():
+def get_head_tag()->str:
             return """
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="style.css">
+            <link rel="stylesheet" href="../static/style.css">
         </head>
         <body>
         """
             
-def get_header(page):
+def get_header(page)->str:
         return f"""
             <div class=headerbar>
                 <h1>LearnCPP.com to Book Conversion</h1>
@@ -22,18 +22,20 @@ def get_header(page):
                 <h2>Table of Contents</h2></a><br>
             """
 
-def get_closing_tags():
+def get_closing_tags()->str:
      return """</main></body>"""
 
 
 
-def check_fix_and_write_lines(article,file):
+def get_fixed_lines(article)->list[str]:
+    result = []
     for line in article:    
         if line.startswith("<div class=\"prevnext"):
             break
         if line.startswith("<a"):
             line = re.sub("</?a.+>","",line)
-        file.write(f"{line}\n")
+        result.append(f"{line}\n")
+    return result
         
 
 def main():
@@ -42,14 +44,14 @@ def main():
     page_num = 1
     links= []
 
-    with open("tableofcontents.html","w",encoding="utf-8") as file:
+    with open("templates/tableofcontents.html","w",encoding="utf-8") as file:
         file.write(get_head_tag())
         file.write("""
                    <div class=headerbar>
                    <h1>CPP Book Table of contents </h1>
                    </div>
                    <br>
-                   <a href=\"./cppbook-pg1.html\" style="font-size:larger; font-weight:bold; margin-left:1rem;">To Book</a>
+                   <a href="cppbook-pg1.html" style="font-size:larger; font-weight:bold; margin-left:1rem;">To Book</a>
                    <hr>
                    <ul style="display:flex; flex-direction:column; justify-items:center;">
                    """)
@@ -78,11 +80,11 @@ def main():
         file.write("</ul></a></body>")
 
     current_link = f"cppbook-pg{page_num}.html"
-    with open(current_link,"w",encoding="utf-8") as file:
+    with open(f"templates/{current_link}","w",encoding="utf-8") as file:
         file.write(get_head_tag())
         file.write(get_header(page_num))
 
-    file = open(current_link,"a",encoding="utf-8")
+    file = open(f"templates/{current_link}","a",encoding="utf-8")
     i = 1
     for link in links:
         page = requests.get(link).text
@@ -92,11 +94,12 @@ def main():
         file.write(section_code)
         i+=1
         
-        check_fix_and_write_lines(article,file)
+        file.writelines(get_fixed_lines(article))
 
         if i % 50 == 0:
             page_num+=1
             current_link= f"cppbook-pg{page_num}.html"
+            template_link= f"templates/{current_link}"
             if page_num == 2:
                 file.write(f"""
                     <hr>
@@ -115,7 +118,7 @@ def main():
                     """)            
             file.write(get_closing_tags())
             file.close()
-            file = open(current_link,"w",encoding="utf-8")
+            file = open(template_link,"w",encoding="utf-8")
             file.write(get_head_tag())
             file.write(get_header(page_num))
 
