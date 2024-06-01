@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+import concurrent.futures
+
 
 def get_head_tag()->str:
             return """
@@ -73,8 +75,12 @@ def get_table_of_contents_and_links(text):
     result["text"].append("</ul></a></body>")
     return result
 
-
-        
+def get_article(link):
+    page = requests.get(link).text
+    parsed = BeautifulSoup(page,features="html.parser").find("article")
+    article = str(parsed).split("\n")
+    return article
+    
 def main():
     index = requests.get("https://www.learncpp.com").text
     text = BeautifulSoup(index,features="html.parser").select(".lessontable-row-title > a")
@@ -85,23 +91,21 @@ def main():
     with open("templates/tableofcontents.html","w",encoding="utf-8") as file:
         file.writelines(table_contents_and_links["text"])
 
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        links = executor.map(get_article,links)
+
     current_link = f"cppbook-pg{page_num}.html"
     with open(f"templates/{current_link}","w",encoding="utf-8") as file:
         file.write(get_head_tag())
         file.write(get_header(page_num))
-
     file = open(f"templates/{current_link}","a",encoding="utf-8")
     i = 1
-    for link in links:
-        page = requests.get(link).text
-        parsed = BeautifulSoup(page,features="html.parser").find("article")
-        article = str(parsed).split("\n")
+
+    for article in links:
         section_code= f"<hr><a href={current_link}#lesson{i} name=lesson{i} class=sect>Lesson {i}</a>"
         file.write(section_code)
         i+=1
-        
         file.writelines(get_fixed_lines(article))
-
         if i % 50 == 0:
             page_num+=1
             current_link= f"cppbook-pg{page_num}.html"
@@ -127,13 +131,10 @@ def main():
             file = open(template_link,"w",encoding="utf-8")
             file.write(get_head_tag())
             file.write(get_header(page_num))
-
     file.write(get_closing_tags())
-    file.close()
-                
-        
-                
+    file.close()      
 
 if __name__ == "__main__":
     main()
+
 
