@@ -81,6 +81,7 @@ def get_article(link):
     article = str(parsed).split("\n")
     return article
     
+    
 def main():
     index = requests.get("https://www.learncpp.com").text
     text = BeautifulSoup(index,features="html.parser").select(".lessontable-row-title > a")
@@ -93,6 +94,7 @@ def main():
 
     with concurrent.futures.ProcessPoolExecutor() as executor:
         links = executor.map(get_article,links)
+        links = executor.map(get_fixed_lines,links)
 
     current_link = f"cppbook-pg{page_num}.html"
     with open(f"templates/{current_link}","w",encoding="utf-8") as file:
@@ -105,7 +107,7 @@ def main():
         section_code= f"<hr><a href={current_link}#lesson{i} name=lesson{i} class=sect>Lesson {i}</a>"
         file.write(section_code)
         i+=1
-        file.writelines(get_fixed_lines(article))
+        file.writelines(article)
         if i % 50 == 0:
             page_num+=1
             current_link= f"cppbook-pg{page_num}.html"
