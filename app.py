@@ -9,4 +9,8 @@ def index():
     return render_template("tableofcontents.html")    
 
 
+@app.route("/cppbook-pg<int:number>")
+def book(number):
+    return render_template(f"cppbook-pg{number}.html")    
+
 

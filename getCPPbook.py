@@ -6,26 +6,25 @@ import concurrent.futures
 
 def get_head_tag()->str:
             return """
-        <head>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="../static/style.css">
-        </head>
-        <body>
+        {% extends "template.html" %}
         """
             
 def get_header(page)->str:
         return f"""
+            {{% block header %}}
             <div class=headerbar>
                 <h1>LearnCPP.com to Book Conversion</h1>
                 <span> Section {page} </span>
             </div>
+            {{% endblock %}}
+            {{% block body %}}
             <main>
-                <a href=tableofcontents.html target=_blank class=tableofcontents>
+                <a href=/ target=_blank class=tableofcontents>
                 <h2>Table of Contents</h2></a><br>
             """
 
 def get_closing_tags()->str:
-     return """</main></body>"""
+     return """{% endblock %}"""
 
 
 def get_fixed_lines(article)->list[str]:
@@ -43,12 +42,15 @@ def get_table_of_contents_and_links(text):
     result = {"text":[],"links":[]}
     result["text"].append(get_head_tag())
     result["text"].append("""
+                   {% block header %}
                    <div class=headerbar>
                    <h1>CPP Book Table of contents </h1>
                    </div>
                    <br>
-                   <a href="cppbook-pg1.html" style="font-size:larger; font-weight:bold; margin-left:1rem;">To Book</a>
+                   <a href="cppbook-pg1" style="font-size:larger; font-weight:bold; margin-left:1rem;">To Book</a>
                    <hr>
+                   {% endblock %}
+                   {% block body %}
                    <ul style="display:flex; flex-direction:column; justify-items:center;">
                    """)
     page= 1
@@ -60,7 +62,7 @@ def get_table_of_contents_and_links(text):
             if num % 50 == 0:
                     result["text"].append(f"""
                             <li>
-                                <h2><a href="cppbook-pg{page}.html" style="font-weight:bolder; font-size:2rem;">
+                                <h2><a href="cppbook-pg{page}" style="font-weight:bolder; font-size:2rem;">
                                 Section {page}
                                 </a></h2>
                             </li>
@@ -72,7 +74,7 @@ def get_table_of_contents_and_links(text):
                         <big>{item_text}</big>
                         </li>
                         <br>\n""")
-    result["text"].append("</ul></a></body>")
+    result["text"].append("</ul></a>{% endblock%}")
     return result
 
 def get_article(link):
@@ -96,11 +98,11 @@ def main():
         links = executor.map(get_article,links)
         links = executor.map(get_fixed_lines,links)
 
-    current_link = f"cppbook-pg{page_num}.html"
-    with open(f"templates/{current_link}","w",encoding="utf-8") as file:
+    current_link = f"cppbook-pg{page_num}"
+    with open(f"templates/{current_link}.html","w",encoding="utf-8") as file:
         file.write(get_head_tag())
         file.write(get_header(page_num))
-    file = open(f"templates/{current_link}","a",encoding="utf-8")
+    file = open(f"templates/{current_link}.html","a",encoding="utf-8")
     i = 1
 
     for article in links:
@@ -110,8 +112,8 @@ def main():
         file.writelines(article)
         if i % 50 == 0:
             page_num+=1
-            current_link= f"cppbook-pg{page_num}.html"
-            template_link= f"templates/{current_link}"
+            current_link= f"cppbook-pg{page_num}"
+            template_link= f"templates/{current_link}.html"
             if page_num == 2:
                 file.write(f"""
                     <hr>
@@ -120,7 +122,7 @@ def main():
                     </div>
                     """)
             else:
-                    prev_link = f"cppbook-pg{page_num - 2}.html"
+                    prev_link = f"cppbook-pg{page_num - 2}"
                     file.write(f"""
                     <hr>
                     <div class=footer>
@@ -134,8 +136,7 @@ def main():
             file.write(get_head_tag())
             file.write(get_header(page_num))
     file.write(get_closing_tags())
-    file.close()      
-
+    file.close()    
 if __name__ == "__main__":
     main()
 
