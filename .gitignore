@@ -1,4 +1,5 @@
 *obsidian
 cppbook.md
-*.html
+cppbook*.html
+tableofcontents.html
 *.pyc
