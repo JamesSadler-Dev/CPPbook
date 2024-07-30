@@ -4,11 +4,9 @@ import re
 import concurrent.futures
 
 class BookMaker:
-    @staticmethod
-    def get_head_tag()->str:
-                return """
-            {% extends "template.html" %}
-            """
+    CLOSING_TAG = """{% endblock %}"""
+    OPENING_TAG = """{% extends "template.html" %}"""
+
     
     @staticmethod         
     def get_header(page)->str:
@@ -24,9 +22,10 @@ class BookMaker:
                     <a href=/ target=_blank class=tableofcontents>
                     <h2>Table of Contents</h2></a><br>
                 """
+    
     @staticmethod
-    def get_closing_tags()->str:
-        return """{% endblock %}"""
+    def write_tags(file,tags:str | list[str])->str:
+        file.writelines(tags)
 
     @staticmethod
     def get_fixed_lines(article)->list[str]:
@@ -103,7 +102,7 @@ class BookMaker:
 
         current_link = f"cppbook-pg{page_num}"
         with open(f"templates/{current_link}.html","w",encoding="utf-8") as file:
-            file.write(BookMaker.get_head_tag())
+            file.write(BookMaker.OPENING_TAG)
             file.write(BookMaker.get_header(page_num))
         file = open(f"templates/{current_link}.html","a",encoding="utf-8")
         i = 1
@@ -133,12 +132,12 @@ class BookMaker:
                             <a href={current_link}><h2>Next Page</h2></a>
                         </div>
                         """)            
-                file.write(BookMaker.get_closing_tags())
+                BookMaker.write_tags(file,BookMaker.CLOSING_TAG)
                 file.close()
                 file = open(template_link,"w",encoding="utf-8")
-                file.write(BookMaker.get_head_tag())
+                file.write(BookMaker.OPENING_TAG)
                 file.write(BookMaker.get_header(page_num))
-        file.write(BookMaker.get_closing_tags())
+        BookMaker.write_tags(file,BookMaker.CLOSING_TAG)
         file.close()   
 
 if __name__ == "__main__":
