@@ -132,12 +132,12 @@ class BookMaker:
                             <a href={current_link}><h2>Next Page</h2></a>
                         </div>
                         """)            
-                BookMaker.write_tags(file,BookMaker.CLOSING_TAG)
+                file.writelines(BookMaker.CLOSING_TAG)
                 file.close()
                 file = open(template_link,"w",encoding="utf-8")
                 file.write(BookMaker.OPENING_TAG)
                 file.write(BookMaker.get_header(page_num))
-        BookMaker.write_tags(file,BookMaker.CLOSING_TAG)
+        file.writelines(BookMaker.CLOSING_TAG)
         file.close()   
 
 if __name__ == "__main__":
