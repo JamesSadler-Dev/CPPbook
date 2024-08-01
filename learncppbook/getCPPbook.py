@@ -3,17 +3,17 @@ from bs4 import BeautifulSoup
 import re
 import concurrent.futures
 
-class BookMaker:
+class JinjaTemplateMaker:
     CLOSING_TAG = """{% endblock %}"""
     OPENING_TAG = """{% extends "template.html" %}"""
 
     
     @staticmethod         
-    def get_header(page)->str:
+    def get_header(page,title:str)->str:
             return f"""
                 {{% block header %}}
                 <div class=headerbar>
-                    <h1>LearnCPP.com to Book Conversion</h1>
+                    <h1>{title}</h1>
                     <span> Section {page} </span>
                 </div>
                 {{% endblock %}}
@@ -23,9 +23,6 @@ class BookMaker:
                     <h2>Table of Contents</h2></a><br>
                 """
     
-    @staticmethod
-    def write_tags(file,tags:str | list[str])->str:
-        file.writelines(tags)
 
     @staticmethod
     def get_fixed_lines(article)->list[str]:
@@ -41,7 +38,7 @@ class BookMaker:
     @staticmethod        
     def get_table_of_contents_and_links(text)->dict[str,list[str]]:
         result = {"text":[],"links":[]}
-        result["text"].append(BookMaker.get_head_tag())
+        result["text"].append(JinjaTemplateMaker.OPENING_TAG)
         result["text"].append("""
                     {% block header %}
                     <div class=headerbar>
@@ -90,20 +87,20 @@ class BookMaker:
         index = requests.get("https://www.learncpp.com").text
         text = BeautifulSoup(index,features="html.parser").select(".lessontable-row-title > a")
         page_num = 1
-        table_contents_and_links = BookMaker.get_table_of_contents_and_links(text)
+        table_contents_and_links = JinjaTemplateMaker.get_table_of_contents_and_links(text)
         links = table_contents_and_links["links"]
 
         with open("templates/tableofcontents.html","w",encoding="utf-8") as file:
             file.writelines(table_contents_and_links["text"])
 
         with concurrent.futures.ProcessPoolExecutor() as executor:
-            links = executor.map(BookMaker.get_article,links)
-            links = executor.map(BookMaker.get_fixed_lines,links)
+            links = executor.map(JinjaTemplateMaker.get_article,links)
+            links = executor.map(JinjaTemplateMaker.get_fixed_lines,links)
 
         current_link = f"cppbook-pg{page_num}"
         with open(f"templates/{current_link}.html","w",encoding="utf-8") as file:
-            file.write(BookMaker.OPENING_TAG)
-            file.write(BookMaker.get_header(page_num))
+            file.write(JinjaTemplateMaker.OPENING_TAG)
+            file.write(JinjaTemplateMaker.get_header(page_num,"LearnCPP.com to Book Conversion"))
         file = open(f"templates/{current_link}.html","a",encoding="utf-8")
         i = 1
 
@@ -132,15 +129,15 @@ class BookMaker:
                             <a href={current_link}><h2>Next Page</h2></a>
                         </div>
                         """)            
-                file.writelines(BookMaker.CLOSING_TAG)
+                file.writelines(JinjaTemplateMaker.CLOSING_TAG)
                 file.close()
                 file = open(template_link,"w",encoding="utf-8")
-                file.write(BookMaker.OPENING_TAG)
-                file.write(BookMaker.get_header(page_num))
-        file.writelines(BookMaker.CLOSING_TAG)
+                file.write(JinjaTemplateMaker.OPENING_TAG)
+                file.write(JinjaTemplateMaker.get_header(page_num,"LearnCPP.com to Book Conversion"))
+        file.writelines(JinjaTemplateMaker.CLOSING_TAG)
         file.close()   
 
 if __name__ == "__main__":
-    BookMaker.run()
+    JinjaTemplateMaker.run()
 
 

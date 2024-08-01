@@ -1,5 +1,5 @@
-import getCPPbook
+import learncppbook.getCPPbook as getCPPbook
 
 
 def test_fail():
-    getCPPbook.get_article()
+    assert getCPPbook.JinjaTemplateMaker.OPENING_TAG == "HELLO WORLD"
