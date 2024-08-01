@@ -6,6 +6,8 @@ import concurrent.futures
 class JinjaTemplateMaker:
     CLOSING_TAG = """{% endblock %}"""
     OPENING_TAG = """{% extends "template.html" %}"""
+    RAW_BLOCK_OPEN = "{% raw %}"
+    RAW_BLOCK_CLOSE = "{% endraw %}"
 
     
     @staticmethod         
@@ -108,7 +110,9 @@ class JinjaTemplateMaker:
             section_code= f"<hr><a href={current_link}#lesson{i} name=lesson{i} class=sect>Lesson {i}</a>"
             file.write(section_code)
             i+=1
+            file.write(JinjaTemplateMaker.RAW_BLOCK_OPEN)
             file.writelines(article)
+            file.write(JinjaTemplateMaker.RAW_BLOCK_CLOSE)
             if i % 50 == 0:
                 page_num+=1
                 current_link= f"cppbook-pg{page_num}"
@@ -129,12 +133,12 @@ class JinjaTemplateMaker:
                             <a href={current_link}><h2>Next Page</h2></a>
                         </div>
                         """)            
-                file.writelines(JinjaTemplateMaker.CLOSING_TAG)
+                file.write(JinjaTemplateMaker.CLOSING_TAG)
                 file.close()
                 file = open(template_link,"w",encoding="utf-8")
                 file.write(JinjaTemplateMaker.OPENING_TAG)
                 file.write(JinjaTemplateMaker.get_header(page_num,"LearnCPP.com to Book Conversion"))
-        file.writelines(JinjaTemplateMaker.CLOSING_TAG)
+        file.write(JinjaTemplateMaker.CLOSING_TAG)
         file.close()   
 
 if __name__ == "__main__":

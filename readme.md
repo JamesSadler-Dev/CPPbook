@@ -1,5 +1,6 @@
 <h1>CPPbook- learnCPP converter</h1>
 
+[![Build and Test](https://github.com/JamesSadler-Dev/CPPbook/actions/workflows/build-test.yml/badge.svg)](https://github.com/JamesSadler-Dev/CPPbook/actions/workflows/build-test.yml)
 
 <h3>Usage:</h3>
 
@@ -12,7 +13,7 @@ poetry install
 <li>Run program to generate all require files:</ii><br>
 
 ```bash
-poetry run python ./getCPPbook.py
+poetry run python ./learncppbook/getCPPbook.py
 ```
 
 <li>Run flask backend server:</li>
